@@ -23,14 +23,19 @@ namespace Lexicon
             columnsCount = m;
             maxIndex = this.Max(n, m);
             data = new SortedList<int, SparseVectorPair>(maxIndex);
+            for (int i = 0; i < maxIndex; ++i)
+                data[i] = new SparseVectorPair(new SparseVector(),new SparseVector());            
         }
 
+        /// <summary>
+        /// Метод записывает значение val по адресу [i,j]
+        /// </summary>
+        /// <param name="i">номер строки (начинается с 0)</param>
+        /// <param name="j">номер столбца (начинается с 0)</param>
+        /// <param name="val">значение</param>
         public void SetValue(int i, int j, int val)
         {
-            if (data[i] == null)
-                data[i] = new SparseVectorPair(new SparseVector(), new SparseVector());
-            if (data[j] == null)
-                data[j] = new SparseVectorPair(new SparseVector(), new SparseVector());
+            if (i >= maxIndex || j > maxIndex) maxIndex = Max(i, j);
             data[i].Item1[j] = val;
             data[j].Item2[i] = val;
         }
@@ -131,7 +136,16 @@ namespace Lexicon
             return found.Key;
         }
 
+        public override string ToString()
+        {
+            return data.Aggregate("", (c, n) => c == "" ?
+                n.ToString() :
+                c + "\n" + n.ToString());
+        }
 
+
+        //-------------------------------------------------------------------------------------------
+        //Частные методы
         private int Min(int a, int b)
         {
             if (a < b) return a;

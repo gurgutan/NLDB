@@ -92,7 +92,7 @@ namespace Lexicon
 
         public IEnumerable<int> Indexes()
         {
-            return data.Keys;
+            return data.Keys.OrderBy(k=>k);
         }
 
         public bool ContainIndex(int i)
@@ -134,6 +134,14 @@ namespace Lexicon
         public int Sum()
         {
             return data.Sum(v => v.Value);
+        }
+
+        public override string ToString()
+        {
+            return "{" + data.Aggregate("", (c, n) => 
+            c == "" ? 
+            "[" + n.Key + "," + n.Value + "]" : 
+            c + "," + "[" + n.Key + "," + n.Value + "]") + "}";
         }
 
     }

@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // набора атрибутов. Измените значения этих атрибутов, чтобы изменить сведения,
 // связанные со сборкой.
 [assembly: AssemblyTitle("NLDB")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Natural Language Data Base")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany(".")]
 [assembly: AssemblyProduct("NLDB")]
