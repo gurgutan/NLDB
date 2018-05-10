@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NLDB", "NLDB\NLDB.csproj", "{D6DA9919-3A36-40DB-8E0C-284C8C727A38}"
+	ProjectSection(ProjectDependencies) = postProject
+		{7AE3318F-5553-448A-962A-9603294A5C21} = {7AE3318F-5553-448A-962A-9603294A5C21}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lexicon", "Lexicon\Lexicon.csproj", "{7AE3318F-5553-448A-962A-9603294A5C21}"
 EndProject

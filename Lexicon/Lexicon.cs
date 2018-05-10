@@ -16,7 +16,7 @@ namespace NLDB
 
         private Dictionary<string, int> atoms = new Dictionary<string, int>(MAX_ATOMS_N);
         private static int currentID = 2;
-        private int size;
+        //private int size;
 
         /// <summary>
         /// Матрицы композиций

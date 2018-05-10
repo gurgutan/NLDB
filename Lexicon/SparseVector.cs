@@ -21,12 +21,20 @@ namespace Lexicon
             data = new SortedList<int, int>(n);
         }
 
+        public SparseVector(IEnumerable<int> values)
+        {
+            data = new SortedList<int, int>(values.Count());
+            int i = 0;
+            foreach (var v in values)
+                data[i++] = v;
+        }
         public SparseVector(IEnumerable<Tuple<int, int>> values)
         {
             data = new SortedList<int, int>(values.Count());
             foreach (var v in values)
                 data[v.Item1] = v.Item2;
         }
+
         public SparseVector(IEnumerable<KeyValuePair<int, int>> values)
         {
             data = new SortedList<int, int>(values.Count());
