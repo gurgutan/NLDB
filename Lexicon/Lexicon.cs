@@ -25,7 +25,13 @@ namespace NLDB
 
         public Lexicon()
         {
-            ranks.Initialize();
+            for (int i = 0; i < MAX_RANK; i++)
+                ranks[i] = new SparseMatrix(MAX_N, MAX_N);
+        }
+
+        public SparseMatrix[] AsMatrices()
+        {
+            return ranks;
         }
 
         public void Link(int r, int p, int c, int o)
@@ -54,6 +60,14 @@ namespace NLDB
                  AsIndexed().               //пары <индекс, значение>
                  OrderBy(t => t.Item2).     //сортируем по значению
                  Select(pair => pair.Item1);//возвращаем только индексы
+        }
+
+        public int RanksCount
+        {
+            get
+            {
+                return ranks.Length;
+            }
         }
 
         public int Add(Term term)

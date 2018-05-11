@@ -17,6 +17,16 @@ namespace Lexicon
         //Сортированный список пар векторов <строка, колонка>
         private SortedList<int, SparseVectorPair> data;
 
+        public SparseMatrix()
+        {
+            rowsCount = 256;
+            columnsCount = 256;
+            maxIndex = 256;
+            data = new SortedList<int, SparseVectorPair>(maxIndex);
+            for (int i = 0; i < maxIndex; ++i)
+                data[i] = new SparseVectorPair(new SparseVector(), new SparseVector());
+        }
+
         public SparseMatrix(int n, int m)
         {
             rowsCount = n;
@@ -24,7 +34,7 @@ namespace Lexicon
             maxIndex = this.Max(n, m);
             data = new SortedList<int, SparseVectorPair>(maxIndex);
             for (int i = 0; i < maxIndex; ++i)
-                data[i] = new SparseVectorPair(new SparseVector(),new SparseVector());            
+                data[i] = new SparseVectorPair(new SparseVector(), new SparseVector());
         }
 
         /// <summary>
@@ -143,8 +153,6 @@ namespace Lexicon
                 c + "\n" + n.ToString());
         }
 
-
-        //-------------------------------------------------------------------------------------------
         //Частные методы
         private int Min(int a, int b)
         {
