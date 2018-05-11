@@ -120,6 +120,20 @@ namespace Lexicon
             return new SparseVector(data[i].Item2);
         }
 
+        public IEnumerable<Tuple<int, SparseVector>> Columns()
+        {
+            return data.
+                Where(p1 => !p1.Value.Item2.IsZero()).
+                Select(p => new Tuple<int, SparseVector>(p.Key, p.Value.Item2));
+        }
+
+        public IEnumerable<Tuple<int, SparseVector>> Rows()
+        {
+            return data.
+                Where(p1=>!p1.Value.Item1.IsZero()).
+                Select(p2 => new Tuple<int, SparseVector>(p2.Key, p2.Value.Item1));
+        }
+
         public int FindEqualRow(SparseVector v)
         {
             KeyValuePair<int, SparseVectorPair> found =

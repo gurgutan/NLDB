@@ -27,5 +27,15 @@ namespace Lexicon
                 i++;
             }
         }
+
+        public override string ToString()
+        {
+            return "[" +
+                rank + "," +
+                id + "," +
+                (childs.Length == 0 ? "" :
+                "{" + childs.Aggregate("", (c, n) => c == "" ? n.ToString() : c + "," + n.ToString()) + "}")
+                + "]";
+        }
     }
 }

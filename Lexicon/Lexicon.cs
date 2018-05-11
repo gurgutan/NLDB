@@ -80,7 +80,7 @@ namespace NLDB
             }
             // Если слово ранга >0, то пытаемся его найти по дочерним словам
             SparseVector _childs = new SparseVector();
-            for (int i=0; i<term.Childs.Length;i++)
+            for (int i = 0; i < term.Childs.Length; i++)
             {
                 _childs[this.Add(term.Childs[i])] = i;
             }
@@ -94,10 +94,28 @@ namespace NLDB
 
         public Word GetWord(int r, int i)
         {
+            if (r == 0)
+            {
+                SparseVector row = ranks[r].Row(i);
+                if (row.IsZero()) return null;
+                return new Word(r, i, row.Indexes());
+            }
             // индекс матрицы равен рангу слова - 1
             SparseVector _childs = ranks[r - 1].Column(i);
             if (_childs.IsZero()) return null;
-            return new Word(r, i, _childs.Indexes().OrderBy(v => v));
+            return new Word(r, i, _childs.Indexes());
+        }
+
+        public IEnumerable<Word> GetWords(int r)
+        {
+            if (r == 0)
+                return ranks[r].
+                    Rows().
+                    Select(v => new Word(r, v.Item1, v.Item2.Indexes()));
+            var words = ranks[r - 1].
+                Columns().
+                Select(v => new Word(r, v.Item1, v.Item2.Indexes()));
+            return words;
         }
 
         private int NextID()

@@ -63,14 +63,14 @@ namespace NLDB
             split_regex = new Regex(ptrn, RegexOptions.Compiled);
         }
 
-        public Term Parse(string line)
+        public Term TryParse(string line)
         {
             var symbols = this.Split(line);//this.GetMatches(line).Where(s => s.Length > 0);
             if (symbols.Count() == 0) return null;
             if (this.ChildParser == null)
                 return new Term(Parser.NullString, symbols.Select(s => new Term(s)).ToArray());
             else
-                return new Term(Parser.NullString, symbols.Select(s => this.ChildParser.Parse(s)).Where(t => t != null).ToArray());
+                return new Term(Parser.NullString, symbols.Select(s => this.ChildParser.TryParse(s)).Where(t => t != null).ToArray());
         }
 
         public IEnumerable<string> Split(string line)

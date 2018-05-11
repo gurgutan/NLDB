@@ -90,6 +90,10 @@ namespace Lexicon
             return data.Select(kvp => new Tuple<int, int>(kvp.Key, kvp.Value)).ToArray();
         }
 
+        /// <summary>
+        /// Возвращает упорядоченную коллекцию индексов ненулевых элементов матрицы
+        /// </summary>
+        /// <returns>упорядоченная по возрастанию коллекция ненулевых индексов вектора</returns>
         public IEnumerable<int> Indexes()
         {
             return data.Keys.OrderBy(k=>k);
