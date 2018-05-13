@@ -15,6 +15,7 @@ namespace NLDB
         private static readonly int MAX_N = 1048583;    // модуль класса вычетов, примитивные корни: {5,7,10,14,15,17,19,20,21,28,30,31,34,38,40,42,45,46,51,53,55,56,57,59,60,61,62,63,65,67,...}
 
         private Dictionary<string, int> atoms = new Dictionary<string, int>(MAX_ATOMS_N);
+        private Dictionary<int, string> atoms_indexes = new Dictionary<int, string>(MAX_ATOMS_N);
         private static int currentID = 2;
         //private int size;
 
@@ -44,6 +45,14 @@ namespace NLDB
             return ranks[r].Row(c).Indexes();
         }
 
+        public Dictionary<int, string> Atoms
+        {
+            get
+            {
+                return atoms_indexes;
+            }
+        }
+
         public int Child(int r, int p, int o)
         {
             return ranks[r].                        //среди слов ранга r
@@ -70,19 +79,31 @@ namespace NLDB
             }
         }
 
+        private int AddAtom(string s)
+        {
+            int n;
+            if (atoms.TryGetValue(s, out n)) return n;
+            n = this.NextID();
+            atoms[s] = n;
+            atoms_indexes[n] = s;
+            return n;
+        }
+
+        private string GetAtom(int i)
+        {
+            return atoms_indexes[i];
+        }
+
         public int Add(Term term)
         {
             if (term.Rank == 0)
-            {
-                if (atoms.ContainsKey(term.Symbol)) return atoms[term.Symbol];
-                int id = this.NextID();
-                return atoms[term.Symbol] = id;
-            }
+                return AddAtom(term.Symbol);
             // Если слово ранга >0, то пытаемся его найти по дочерним словам
             SparseVector _childs = new SparseVector();
-            for (int i = 0; i < term.Childs.Length; i++)
+            for (int i = 0; i < term.Childs.Length; ++i)
             {
-                _childs[this.Add(term.Childs[i])] = i;
+                int childID = this.Add(term.Childs[i]);
+                _childs[childID] = i + 1;   //номер символа в слове
             }
             int found = ranks[term.Rank - 1].FindEqualColumn(_childs);
             if (found > 0) return found;
@@ -111,11 +132,10 @@ namespace NLDB
             if (r == 0)
                 return ranks[r].
                     Rows().
-                    Select(v => new Word(r, v.Item1, v.Item2.Indexes()));
-            var words = ranks[r - 1].
+                    Select(v => new Word(r, v.Item1));
+            return ranks[r - 1].
                 Columns().
                 Select(v => new Word(r, v.Item1, v.Item2.Indexes()));
-            return words;
         }
 
         private int NextID()

@@ -33,8 +33,29 @@ namespace Lexicon
             columnsCount = m;
             maxIndex = this.Max(n, m);
             data = new SortedList<int, SparseVectorPair>(maxIndex);
-            for (int i = 0; i < maxIndex; ++i)
-                data[i] = new SparseVectorPair(new SparseVector(), new SparseVector());
+            //for (int i = 0; i < maxIndex; ++i)
+            //    data[i] = new SparseVectorPair(new SparseVector(), new SparseVector());
+        }
+
+        private SparseVectorPair GetVectorsPair(int i)
+        {
+            SparseVectorPair p;
+            if (!data.TryGetValue(i, out p)) return null;
+            return p;
+        }
+
+        private SparseVectorPair InitVectorsPair(int i)
+        {
+            SparseVectorPair p = new SparseVectorPair(new SparseVector(), new SparseVector());
+            data[i] = p;
+            return p;
+        }
+
+        private SparseVectorPair GetOrAddPair(int i)
+        {
+            SparseVectorPair p = GetVectorsPair(i);
+            if (p == null) return InitVectorsPair(i);
+            else return p;
         }
 
         /// <summary>
@@ -46,14 +67,17 @@ namespace Lexicon
         public void SetValue(int i, int j, int val)
         {
             if (i >= maxIndex || j > maxIndex) maxIndex = Max(i, j);
-            data[i].Item1[j] = val;
-            data[j].Item2[i] = val;
+            SparseVectorPair pairForRow = GetOrAddPair(i);
+            SparseVectorPair pairForColumn = GetOrAddPair(j);
+            pairForRow.Item1[j] = val;
+            pairForColumn.Item2[i] = val;
         }
 
         public int GetValue(int i, int j)
         {
-            if (data[i] == null) return 0;
-            return data[i].Item1[j];
+            SparseVectorPair p = GetVectorsPair(i);
+            if (p==null) return 0;
+            return p.Item1[j];
         }
 
         public int this[int i, int j]
@@ -70,7 +94,6 @@ namespace Lexicon
 
         public void SetColumn(int j, SparseVector v)
         {
-            ZeroColumn(j);
             var indexes = v.AsIndexed();
             foreach (var i in indexes)
                 this.SetValue(i.Item1, j, i.Item2);
@@ -78,13 +101,13 @@ namespace Lexicon
 
         public void ZeroColumn(int i)
         {
-            SparseVectorPair pair = data[i];
+            SparseVectorPair pair = GetVectorsPair(i);
+            if (pair == null) return;
             pair.Item1.Zeroize(i);  // обнуляем i-й элемент в строке
             pair.Item2.Zeroize();   // обнуляем всю i-ю колонку
         }
         public void SetRow(int i, SparseVector v)
         {
-            ZeroRow(i);
             var indexes = v.AsIndexed();
             foreach (var j in indexes)
                 this.SetValue(i, j.Item1, j.Item2);
@@ -92,7 +115,8 @@ namespace Lexicon
 
         public void ZeroRow(int i)
         {
-            SparseVectorPair pair = data[i];
+            SparseVectorPair pair = GetVectorsPair(i);
+            if (pair == null) return;
             pair.Item1.Zeroize();   // обнуляем i-й элемент в колонке
             pair.Item2.Zeroize(i);  // обнуляем всю i-ю строку
         }
@@ -110,13 +134,13 @@ namespace Lexicon
 
         public SparseVector Row(int i)
         {
-            if (data[i] == null) return null;
-            return new SparseVector(data[i].Item1);
+            SparseVectorPair pair = GetOrAddPair(i);
+            return new SparseVector(pair.Item1);
         }
 
         public SparseVector Column(int i)
         {
-            if (data[i] == null) return null;
+            SparseVectorPair pair = GetOrAddPair(i);
             return new SparseVector(data[i].Item2);
         }
 
@@ -130,7 +154,7 @@ namespace Lexicon
         public IEnumerable<Tuple<int, SparseVector>> Rows()
         {
             return data.
-                Where(p1=>!p1.Value.Item1.IsZero()).
+                Where(p1 => !p1.Value.Item1.IsZero()).
                 Select(p2 => new Tuple<int, SparseVector>(p2.Key, p2.Value.Item1));
         }
 
@@ -150,7 +174,8 @@ namespace Lexicon
         public int FindEqualColumn(SparseVector v)
         {
             KeyValuePair<int, SparseVectorPair> found =
-                data.FirstOrDefault(d =>
+                data.AsParallel().
+                FirstOrDefault(d =>
                 {
                     SparseVector rv = new SparseVector(d.Value.Item2);
                     SparseVector dif = rv - v;

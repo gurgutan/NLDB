@@ -14,7 +14,7 @@ namespace Lexicon
 
         public Word() { }
         public Word(int r) { rank = r; }
-        public Word(int _rank, int _id) { rank = _rank; id = _id; }
+        public Word(int _rank, int _id) { rank = _rank; id = _id; childs = new int[0]; }
         public Word(int _rank, int _id, IEnumerable<int> _childs)
         {
             rank = _rank;
@@ -36,6 +36,11 @@ namespace Lexicon
                 (childs.Length == 0 ? "" :
                 "{" + childs.Aggregate("", (c, n) => c == "" ? n.ToString() : c + "," + n.ToString()) + "}")
                 + "]";
+        }
+
+        public string AsText(Dictionary<int, string> atoms)
+        {
+            return rank == 0 ? atoms[id] : "{" + childs.Aggregate("", (c, n) => c == "" ? n.ToString() : c + "," + n.ToString()) + "}";
         }
     }
 }

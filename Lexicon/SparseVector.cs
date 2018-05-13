@@ -53,7 +53,7 @@ namespace Lexicon
             {
                 int val;
                 if (data.TryGetValue(i, out val))
-                    return data[i];
+                    return val;
                 else
                     return 0;
             }
@@ -114,7 +114,6 @@ namespace Lexicon
 
         public static SparseVector operator +(SparseVector a, SparseVector b)
         {
-
             SparseVector result = new SparseVector(a);
             foreach (var v in b.AsIndexed())
                 result[v.Item1] = result[v.Item1] + v.Item2;
@@ -123,7 +122,6 @@ namespace Lexicon
 
         public static SparseVector operator *(SparseVector a, SparseVector b)
         {
-
             SparseVector result = new SparseVector(a);
             foreach (var v in b.AsIndexed())
                 result[v.Item1] = result[v.Item1] * v.Item2;

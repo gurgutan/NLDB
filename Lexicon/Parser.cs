@@ -70,7 +70,13 @@ namespace NLDB
             if (this.ChildParser == null)
                 return new Term(Parser.NullString, symbols.Select(s => new Term(s)).ToArray());
             else
-                return new Term(Parser.NullString, symbols.Select(s => this.ChildParser.TryParse(s)).Where(t => t != null).ToArray());
+            {
+                var childs = symbols.
+                    Select(s => this.ChildParser.TryParse(s)).
+                    Where(t => t != null);
+                if (childs.Count() == 0) return null;
+                return new Term(Parser.NullString, childs.ToArray());
+            }
         }
 
         public IEnumerable<string> Split(string line)

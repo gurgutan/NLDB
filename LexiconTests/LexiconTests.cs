@@ -70,13 +70,24 @@ namespace NLDB.Tests
         [TestMethod()]
         public void AddTest()
         {
-            Assert.Fail();
+            Lexicon lex = new Lexicon();
+            string s = "привет";
+            Term term = Parsers.ParserRank1.TryParse(s);
+            int id = lex.Add(term);
+            var words = lex.GetWords(1);
+            Assert.AreEqual(words.Count(), 1);
         }
 
         [TestMethod()]
         public void GetWordTest()
         {
-            Assert.Fail();
+            Lexicon lex = new Lexicon();
+            string s = "привет друзья. я пришел к вам в гости.";
+            Term term = Parsers.ParserRank2.TryParse(s);
+            int id = lex.Add(term);
+            Assert.AreEqual(lex.GetWords(0).Count(), 8);
+            Assert.AreEqual(lex.GetWords(1).Count(), 2);
+            Assert.AreEqual(lex.GetWords(2).Count(), 1);
         }
     }
 }
