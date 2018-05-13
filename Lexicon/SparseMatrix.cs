@@ -163,8 +163,7 @@ namespace Lexicon
             KeyValuePair<int, SparseVectorPair> found =
                 data.FirstOrDefault(d =>
                 {
-                    SparseVector rv = new SparseVector(d.Value.Item1);
-                    SparseVector dif = rv - v;
+                    SparseVector dif = d.Value.Item1 - v;   //разница между строкой матрицы и вектором v
                     if (dif.SumMagnitude() == 0) return true;
                     else return false;
                 });
@@ -177,8 +176,7 @@ namespace Lexicon
                 data.AsParallel().
                 FirstOrDefault(d =>
                 {
-                    SparseVector rv = new SparseVector(d.Value.Item2);
-                    SparseVector dif = rv - v;
+                    SparseVector dif = d.Value.Item2 - v;   //разница между столбцом матрицы и вектором v
                     if (dif.SumMagnitude() == 0) return true;
                     else return false;
                 });

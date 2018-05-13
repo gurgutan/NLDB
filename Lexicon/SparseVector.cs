@@ -96,7 +96,7 @@ namespace Lexicon
         /// <returns>упорядоченная по возрастанию коллекция ненулевых индексов вектора</returns>
         public IEnumerable<int> Indexes()
         {
-            return data.Keys.OrderBy(k=>k);
+            return data.Keys.OrderBy(k => k);
         }
 
         public bool ContainIndex(int i)
@@ -106,25 +106,25 @@ namespace Lexicon
 
         public static SparseVector operator -(SparseVector a, SparseVector b)
         {
-            SparseVector result = new SparseVector(a);
+            SparseVector result = new SparseVector();
             foreach (var v in b.AsIndexed())
-                result[v.Item1] = result[v.Item1] - v.Item2;
+                result[v.Item1] = a[v.Item1] - v.Item2;
             return result;
         }
 
         public static SparseVector operator +(SparseVector a, SparseVector b)
         {
-            SparseVector result = new SparseVector(a);
+            SparseVector result = new SparseVector();
             foreach (var v in b.AsIndexed())
-                result[v.Item1] = result[v.Item1] + v.Item2;
+                result[v.Item1] = a[v.Item1] + v.Item2;
             return result;
         }
 
         public static SparseVector operator *(SparseVector a, SparseVector b)
         {
-            SparseVector result = new SparseVector(a);
+            SparseVector result = new SparseVector();
             foreach (var v in b.AsIndexed())
-                result[v.Item1] = result[v.Item1] * v.Item2;
+                result[v.Item1] = a[v.Item1] * v.Item2;
             return result;
         }
 
@@ -140,9 +140,9 @@ namespace Lexicon
 
         public override string ToString()
         {
-            return "{" + data.Aggregate("", (c, n) => 
-            c == "" ? 
-            "[" + n.Key + "," + n.Value + "]" : 
+            return "{" + data.Aggregate("", (c, n) =>
+            c == "" ?
+            "[" + n.Key + "," + n.Value + "]" :
             c + "," + "[" + n.Key + "," + n.Value + "]") + "}";
         }
 
